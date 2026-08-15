@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+- Bump Rust edition to 2024 and refresh dependencies (including reqwest 0.13).
+- Default TLS is now `native-tls`; the `rustls-tls` feature maps to reqwest's `rustls` (optional; pulls in aws-lc).
+- Add `rust-toolchain.toml` pinning the stable toolchain with rustfmt and clippy.
+- Refresh GitHub Actions workflows to use dtolnay/rust-toolchain instead of actions-rs.
+
+### Fixed
+- Resolve clippy `useless_borrows_in_formatting` and `collapsible_if` warnings under `-D warnings`.
+
 ## [0.2.0] - 2024-07-27
 
 ### Changed

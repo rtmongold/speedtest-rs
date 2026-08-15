@@ -40,11 +40,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: ${{ matrix.rust }}
-        override: true
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
 
     - name: Build
       run: cargo build --verbose --release

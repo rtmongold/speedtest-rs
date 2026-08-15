@@ -1,15 +1,14 @@
 on:
-  # Trigger the workflow on push or pull request,
-  # but only for the master branch
   push:
   pull_request:
 
-name: Continuous integration
+name: Continuous Integration
 
 jobs:
   ci:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         rust:
           - stable
@@ -17,7 +16,7 @@ jobs:
           - nightly
         os:
           - ubuntu-latest
-          - macOS-latest
+          - macos-latest
           - windows-latest
         features:
           - "rustls-tls"
@@ -26,43 +25,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions-rs/toolchain@v1
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
         with:
-          profile: minimal
           toolchain: ${{ matrix.rust }}
-          override: true
           components: rustfmt, clippy
 
       - uses: Swatinem/rust-cache@v2
 
-      - uses: actions-rs/cargo@v1
-        name: Build
-        with:
-          command: build
-          args: --features=${{ matrix.features }}
+      - name: Build
+        run: cargo build --features=${{ matrix.features }}
 
-      - uses: actions-rs/cargo@v1
-        name: Unit Test
-        with:
-          command: test
-          args: --features=${{ matrix.features }}
+      - name: Unit Test
+        run: cargo test --features=${{ matrix.features }}
 
-      - uses: actions-rs/cargo@v1
-        name: Run
+      - name: Run
         env:
-            RUST_LOG: "debug"
-        with:
-          command: run
-          args: --features=${{ matrix.features }}
+          RUST_LOG: debug
+        run: cargo run --features=${{ matrix.features }}
 
-      - uses: actions-rs/cargo@v1
-        name: Format Check
-        with:
-          command: fmt
-          args: --all -- --check
+      - name: Format Check
+        run: cargo fmt --all -- --check
 
-      - uses: actions-rs/cargo@v1
-        name: Clippy
-        with:
-          command: clippy
-          args: -- -D warnings
+      - name: Clippy
+        run: cargo clippy --all-targets --features=${{ matrix.features }} -- -D warnings

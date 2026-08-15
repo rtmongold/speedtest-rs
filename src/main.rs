@@ -297,13 +297,13 @@ fn main() -> Result<(), error::SpeedTestError> {
 
     if let (Some(download_measurement), Some(upload_measurement)) =
         (download_measurement, upload_measurement)
+        && !machine_format
+        && ((download_measurement.kbps() as f32 / 1000.00) > 200.0
+            || (upload_measurement.kbps() as f32 / 1000.00) > 200.0)
     {
-        if !machine_format
-            && ((download_measurement.kbps() as f32 / 1000.00) > 200.0
-                || (upload_measurement.kbps() as f32 / 1000.00) > 200.0)
-        {
-            println!("WARNING: This tool may not be accurate for high bandwidth connections! Consider using a socket-based client alternative.")
-        }
+        println!(
+            "WARNING: This tool may not be accurate for high bandwidth connections! Consider using a socket-based client alternative."
+        );
     }
     Ok(())
 }

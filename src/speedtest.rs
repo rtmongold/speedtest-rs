@@ -13,9 +13,9 @@ use log::info;
 #[cfg(not(feature = "log"))]
 use super::log::info;
 
-use reqwest::blocking::{Body, Client, Request, Response};
-use reqwest::header::{HeaderValue, CONNECTION, CONTENT_TYPE, REFERER, USER_AGENT};
 use reqwest::Url;
+use reqwest::blocking::{Body, Client, Request, Response};
+use reqwest::header::{CONNECTION, CONTENT_TYPE, HeaderValue, REFERER, USER_AGENT};
 
 use crate::distance::EarthLocation;
 use crate::error::SpeedTestError;
@@ -45,7 +45,7 @@ pub fn download_configuration() -> Result<Response, SpeedTestError> {
     #[cfg(not(test))]
     let url = "http://www.speedtest.net/speedtest-config.php";
     #[cfg(test)]
-    let url = &format!("{}/speedtest-config.php", &_server.url());
+    let url = &format!("{}/speedtest-config.php", _server.url());
 
     let client = Client::new();
     // Creating an outgoing request.
@@ -73,7 +73,7 @@ pub fn download_server_list() -> Result<Response, SpeedTestError> {
     #[cfg(not(test))]
     let url = "http://www.speedtest.net/speedtest-servers.php";
     #[cfg(test)]
-    let url = &format!("{}/speedtest-servers.php", &_server.url());
+    let url = &format!("{}/speedtest-servers.php", _server.url());
 
     let client = Client::new();
     let server_res = client
@@ -104,7 +104,7 @@ pub struct SpeedTestLatencyTestResult<'a> {
 
 pub fn get_best_server_based_on_latency(
     servers: &[SpeedTestServer],
-) -> Result<SpeedTestLatencyTestResult, SpeedTestError> {
+) -> Result<SpeedTestLatencyTestResult<'_>, SpeedTestError> {
     info!("Testing for fastest server");
     let client = Client::new();
     let mut fastest_server = None;
